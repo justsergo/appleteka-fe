@@ -3,6 +3,7 @@ import './styles.css';
 
 import {useTelegram} from "../../hooks/useTelegram"; 
 import TextField from '../TextField';
+import Select from 'components/Select';
 
 
 const Form = () => {
@@ -44,40 +45,49 @@ const Form = () => {
 
     return (
         <div className={"form"}>
-            <h3>Введите ваши данные</h3>
-             {/*выпайдка*/}
-            <select value={subject} onChange={onChangeSubject} className={'select'}>
+            <Select
+                value={subject} 
+                onChange={onChangeSubject} 
+                required
+                label='Выбирите тип устройства'
+                id='deviceType'
+            >
                 <option value={'physical'}>iphone</option>
                 <option value={'legal'}>airpods</option>
                 <option value={'legal'}>macbook</option>
                 <option value={'legal'}>apple-watch</option>
-            </select>  
+            </Select>  
             <TextField
-                className={'input'} 
                 placeholder={'Серийный номер'}
                 value={country}
                 onChange={onChangeCountry}
+                label='Введите серийный номер'
+                id='serialNumber'
+                required
             />
             {/*автокомлит + выпайдка*/}
-            <input
-                className={'input'}
+            <TextField
                 type="text"
-                placeholder={'Модель устройства'}
+                label='Модель устройства'
+                id='model'
+                placeholder={'Введите модель устройства'}
                 value={country}
                 onChange={onChangeCountry}
+                required
             />
             
-            <input
-                className={'input'}
+            <TextField
                 type="text"
-                placeholder={'Комплект девайса'}
+                label='Комплект девайса'
+                id='kit'
+                placeholder={'Опишите комплект девайса'}
                 value={country}
                 onChange={onChangeCountry}
             />
-            <input
-                className={'input'}
+            <TextField
                 type="range"
-                placeholder={'Состояние'}
+                label={'Дайте оценку состояния девайса'}
+                id='condition'
                 // value={country}
                 onChange={onChangeCountry}
                 min="0" 
@@ -85,16 +95,21 @@ const Form = () => {
                 step="10" 
                 value="80" 
             />
-            <select value={subject} onChange={onChangeSubject} className={'select'}>
+            <Select 
+                value={subject} 
+                onChange={onChangeSubject} 
+                label='Укажите количство памяти'
+                id='ram'
+            >
                 <option value={'physical'}>64</option>
                 <option value={'legal'}>128</option>
                 <option value={'legal'}>256</option>
                 <option value={'legal'}>512</option>
-            </select>            
-            <input
+            </Select>            
+            <TextField
                 className={'input'}
                 type="range"
-                placeholder={'Износ батареи'}
+                placeholder={'Укажите износ батареи'}
                 // value={street}
                 onChange={onChangeStreet}
                 min="0" 
@@ -105,9 +120,10 @@ const Form = () => {
             <textarea
                 className={'input'}
                 type="text"
-                placeholder={'Описание'}
+                placeholder={'Опишите ваш девайс'}
                 value={street}
                 onChange={onChangeStreet}
+                rows={7}
             />
         </div>
     );
