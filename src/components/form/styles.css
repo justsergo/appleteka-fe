@@ -1,0 +1,19 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 20px;
+    background-color: #e5e8ee;
+    /* max-width: 1024px; */
+    /* margin: 0 auto; */
+}
+
+/* .input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 15px;
+} */
+
+.select {
+    padding: 10px;
+}

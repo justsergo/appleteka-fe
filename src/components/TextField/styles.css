@@ -1,0 +1,12 @@
+.aboba {
+    background-color: #ffffff;
+    color: #000;
+    height: 2.5rem;
+    border: 1px solid #c5bdbd;
+    
+}
+
+.aboba:focus-visible {
+    border: 1px solid #c5bdbd;
+    border-radius: 0;
+}
