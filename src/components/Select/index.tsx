@@ -15,7 +15,7 @@ type Props = {
 
 const Select = ({label, id, required=false , ...texFieldProps}: Props)  => {
   return <Wrapper>
-   { label&&<Label for={id} required={required}>{label}</Label>}
+   { label&&<Label htmlFor={id} required={required}>{label}</Label>}
     <SelectStyled {...texFieldProps} id={id} />
   </Wrapper>
 }

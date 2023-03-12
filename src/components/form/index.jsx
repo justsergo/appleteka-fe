@@ -1,66 +1,142 @@
-import React, {useState} from 'react';
+import {useState,useCallback,useEffect} from 'react';
 import './styles.css';
-
-// import {useTelegram} from "../../hooks/useTelegram"; 
 import TextField from '../TextField';
 import Select from 'components/Select';
+import { useTelegram } from 'hooks/useTelegram';
+import { AIRPODS, IPHONE, MACBOOK } from 'constants/deviceTypes';
 
 
 const Form = () => {
-    const [country, setCountry] = useState('');
-    const [street, setStreet] = useState('');
-    const [subject, setSubject] = useState('physical');
-    // const {tg} = useTelegram();
+    const [dataFileds, setDataFields] = useState({
+        deviceType: '',
+        serialNumber: '',
+        diveceModel: '',
+        deviceKit: '',
+        deviceCondition: 5,
+        ramSize: 128,
+        batteryCondition: 90,
+        additionalInfo: '',
+    });
+    const {tg} = useTelegram();
 
-    // const onSendData = useCallback(() => {
-    //     const data = {
-    //         country,
-    //         street,
-    //         subject
-    //     }
-    //     tg.sendData(JSON.stringify(data));
-    // }, [country, street, subject])
+    const onSendData = useCallback(() => {
+        let data = {}
+        switch (dataFileds.deviceType) {
+            case IPHONE:
+                data = dataFileds;
+                break
+            case AIRPODS:
+                data = {
+                    deviceType: dataFileds.deviceType,
+                    serialNumber: dataFileds.serialNumber,
+                    diveceModel: dataFileds.diveceModel,
+                    deviceKit: dataFileds.deviceKit,
+                    deviceCondition: dataFileds.deviceCondition,
+                    additionalInfo: dataFileds.additionalInfo,
+                };
+                break  
+            case MACBOOK:
+                data = {
+                    deviceType: dataFileds.deviceType,
+                    serialNumber: dataFileds.serialNumber,
+                    diveceModel: dataFileds.diveceModel,
+                    deviceKit: dataFileds.deviceKit,
+                    deviceCondition: dataFileds.deviceCondition,
+                    ramSize: dataFileds.ramSize,
+                    batteryCondition: dataFileds.batteryCondition,
+                    additionalInfo: dataFileds.additionalInfo,
+                };
+                break 
+            default:
+                data = null;
+                break;
+        }
+        console.log(data);
+        tg.sendData(JSON.stringify(data));
+    }, [tg, dataFileds]);
 
-    // useEffect(() => {
-    //     tg.onEvent('mainButtonClicked', onSendData)
-    //     return () => {index
-    //     if(!street || !country) {
-    //         tg.MainButton.hide();
-    //     } else {
-    //         tg.MainButton.show();
-    //     }}
-    // }, [country, street]);
-
-    const onChangeCountry = (e) => {
-        setCountry(e.target.value)
+    const reqiredFields = () => {
+        let feilds = {}
+        switch (dataFileds.deviceType) {
+            case IPHONE:
+                feilds = dataFileds;
+                break
+            case AIRPODS:
+                feilds = {
+                    deviceType: dataFileds.deviceType,
+                    serialNumber: dataFileds.serialNumber,
+                    diveceModel: dataFileds.diveceModel,
+                    deviceKit: dataFileds.deviceKit,
+                    deviceCondition: dataFileds.deviceCondition,
+                    additionalInfo: dataFileds.additionalInfo,
+                };
+                break  
+            case MACBOOK:
+                feilds = {
+                    deviceType: dataFileds.deviceType,
+                    serialNumber: dataFileds.serialNumber,
+                    diveceModel: dataFileds.diveceModel,
+                    deviceKit: dataFileds.deviceKit,
+                    deviceCondition: dataFileds.deviceCondition,
+                    ramSize: dataFileds.ramSize,
+                    batteryCondition: dataFileds.batteryCondition,
+                    additionalInfo: dataFileds.additionalInfo,
+                };
+                break 
+            default:
+                feilds = {};
+                break;
+        }
+        return feilds
     }
 
-    const onChangeStreet = (e) => {
-        setStreet(e.target.value)
-    }
+    const isEmptyRequiredFields = Object.values(reqiredFields()).includes('')
 
-    const onChangeSubject = (e) => {
-        setSubject(e.target.value)
+    useEffect(() => {
+        tg.onEvent('mainButtonClicked', onSendData)
+        return () => {
+            tg.offEvent('mainButtonClicked', onSendData)
+        }
+    }, [onSendData, tg]);
+
+    useEffect(() => {
+        tg.MainButton.setParams({
+            text: 'Отправить данные'
+        })
+    }, [tg.MainButton]);
+
+    useEffect(() => {
+        if(isEmptyRequiredFields) {
+            tg.MainButton.disable();
+        } else {
+            tg.MainButton.show();
+        }
+    }, [tg.MainButton, isEmptyRequiredFields]);
+
+    const onChange = (e) => {
+        setDataFields({
+                ...dataFileds,
+                [e.target.id] : e.target.value
+            })
     }
 
     return (
         <div className={"form"}>
             <Select
-                value={subject} 
-                onChange={onChangeSubject} 
+                value={dataFileds.deviceType} 
+                onChange={onChange} 
                 required
                 label='Выбирите тип устройства'
                 id='deviceType'
             >
-                <option value={'physical'}>iphone</option>
-                <option value={'legal'}>airpods</option>
-                <option value={'legal'}>macbook</option>
-                <option value={'legal'}>apple-watch</option>
+                <option value={'physical'}>{IPHONE.toLowerCase()}</option>
+                <option value={'legal'}>{AIRPODS.toLowerCase()}</option>
+                <option value={'legal'}>{MACBOOK.toLowerCase()}</option>
             </Select>  
             <TextField
                 placeholder={'Серийный номер'}
-                value={country}
-                onChange={onChangeCountry}
+                value={dataFileds.serialNumber}
+                onChange={onChange}
                 label='Введите серийный номер'
                 id='serialNumber'
                 required
@@ -69,60 +145,59 @@ const Form = () => {
             <TextField
                 type="text"
                 label='Модель устройства'
-                id='model'
+                id='diveceModel'
                 placeholder={'Введите модель устройства'}
-                value={country}
-                onChange={onChangeCountry}
+                value={dataFileds.diveceModel}
+                onChange={onChange}
                 required
             />
             
             <TextField
                 type="text"
                 label='Комплект девайса'
-                id='kit'
+                id='deviceKit'
                 placeholder={'Опишите комплект девайса'}
-                value={country}
-                onChange={onChangeCountry}
+                value={dataFileds.deviceKit}
+                onChange={onChange}
             />
             <TextField
                 type="range"
-                label={'Дайте оценку состояния девайса'}
-                id='condition'
-                // value={country}
-                onChange={onChangeCountry}
+                label={`Дайте оценку состояния девайса ${dataFileds?.deviceCondition}`}
+                id='deviceCondition'
+                value={dataFileds.deviceCondition}
+                onChange={onChange}
                 min="0" 
                 max="10" 
-                step="10" 
-                value="80" 
+                step="1" 
             />
             <Select 
-                value={subject} 
-                onChange={onChangeSubject} 
+                value={dataFileds.ramSize} 
+                onChange={onChange} 
                 label='Укажите количство памяти'
-                id='ram'
+                id='ramSize'
             >
-                <option value={'physical'}>64</option>
-                <option value={'legal'}>128</option>
-                <option value={'legal'}>256</option>
-                <option value={'legal'}>512</option>
+                <option value={'64'}>64 гб</option>
+                <option value={'128'}>128 гб</option>
+                <option value={'256'}>256 гб</option>
+                <option value={'512'}>512 гб</option>
             </Select>            
             <TextField
-                className={'input'}
                 type="range"
-                placeholder={'Укажите износ батареи'}
-                // value={street}
-                onChange={onChangeStreet}
+                label={`Укажите износ батареи ${dataFileds?.batteryCondition}`}
+                id='batteryCondition'
+                value={dataFileds.batteryCondition}
+                onChange={onChange}
                 min="0" 
                 max="100" 
                 step="1" 
-                value="30" 
             />
             <textarea
                 className={'input'}
                 type="text"
+                id='additionalInfo'
                 placeholder={'Опишите ваш девайс'}
-                value={street}
-                onChange={onChangeStreet}
+                value={dataFileds.additionalInfo}
+                onChange={onChange}
                 rows={7}
             />
         </div>

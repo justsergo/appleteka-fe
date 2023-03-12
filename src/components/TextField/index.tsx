@@ -15,7 +15,7 @@ type Props = {
 
 const TextField = ({label, id, required=false , ...texFieldProps}: Props)  => {
   return <Wrapper>
-   { label&&<Label for={id} required={required}>{label}</Label>}
+   { label&&<Label htmlFor={id} required={required}>{label}</Label>}
     <Input {...texFieldProps} id={id} />
   </Wrapper>
 }

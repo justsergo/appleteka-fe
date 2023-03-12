@@ -1,17 +1,19 @@
-// import { useEffect } from "react";
+import { useEffect } from "react";
 import "App.css";
-import Form from "components/form";
-// import { useTelegram } from "hooks/useTelegram";
+import Form from "components/Form";
+import Header from "components/Header";
+import { useTelegram } from "hooks/useTelegram";
 
 function App() {
-  // const { onToggleButton, tg } = useTelegram();
+  const { tg } = useTelegram();
 
-  // useEffect(() => {
-  //   tg.ready();
-  // }, []);
+  useEffect(() => {
+    tg.ready();
+  }, [tg]);
 
   return (
-    <div className="App">
+    <div>
+      <Header/>
       <Form />
     </div>
   );
